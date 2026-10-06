@@ -1,0 +1,1424 @@
+:root {
+  --ce-red: #a21d21;
+  --ce-red-strong: #c2171e;
+  --ce-black: #171717;
+  --ce-white: #ffffff;
+  --ce-ink: #171717;
+  --ce-muted: #424242;
+  --ce-line: #d9d9d4;
+  --ce-line-soft: #ececec;
+  --ce-shadow: 0 22px 70px rgba(0, 0, 0, 0.34);
+  --ce-sidebar-bg: #0d0d0d;
+  --ce-sidebar-border: rgba(255, 255, 255, 0.08);
+  color-scheme: light;
+  font-family: "Museo Sans", "Avenir Next", Avenir, "Helvetica Neue", Arial, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #050505;
+  color: var(--ce-white);
+  overflow: hidden;
+}
+
+button {
+  font: inherit;
+}
+
+/* -------- Layout -------- */
+
+.configurator {
+  display: grid;
+  grid-template-columns: 320px minmax(0, 1fr) 76px;
+  height: 100vh;
+  background: radial-gradient(circle at 50% -10%, #2d2d2d 0, #050505 58%);
+}
+
+/* -------- Sidebar -------- */
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--ce-sidebar-bg);
+  border-right: 1px solid var(--ce-sidebar-border);
+}
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 0 auto;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--ce-sidebar-border);
+}
+
+.sidebar-brand img {
+  display: block;
+  width: 168px;
+  height: auto;
+}
+
+.step-nav {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.18) transparent;
+}
+
+.step-nav::-webkit-scrollbar {
+  width: 8px;
+}
+
+.step-nav::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.step-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border-radius: 4px;
+}
+
+.step-nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+/* -------- Accordion items -------- */
+
+.step-item {
+  border-bottom: 1px solid var(--ce-sidebar-border);
+}
+
+.step-item:last-child {
+  border-bottom: 0;
+}
+
+.step-header {
+  display: grid;
+  grid-template-columns: 30px 26px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 12px 16px;
+  border: 0;
+  background: transparent;
+  color: var(--ce-white);
+  cursor: pointer;
+  text-align: left;
+  transition: background 160ms ease;
+}
+
+.step-header:hover {
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.step-item.is-open .step-header {
+  background: linear-gradient(135deg, var(--ce-red), var(--ce-red-strong));
+}
+
+.step-item.complete .step-number {
+  background: var(--ce-red);
+  color: var(--ce-white);
+  border-color: var(--ce-red);
+}
+
+.step-item.is-open.complete .step-number {
+  background: var(--ce-white);
+  color: var(--ce-red);
+  border-color: var(--ce-white);
+}
+
+.step-icon {
+  width: 30px;
+  height: 30px;
+  background: currentColor;
+  mask: var(--step-icon) center / contain no-repeat;
+  -webkit-mask: var(--step-icon) center / contain no-repeat;
+  opacity: 0.95;
+}
+
+.step-number {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid rgba(255, 255, 255, 0.46);
+  border-radius: 50%;
+  color: currentColor;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.step-item.is-open .step-number {
+  border-color: var(--ce-white);
+}
+
+.step-copy {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.step-copy strong {
+  overflow: hidden;
+  color: currentColor;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  line-height: 1.15;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.step-copy span {
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 10.5px;
+  line-height: 1.2;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.step-item.is-open .step-copy span {
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.step-chevron {
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 10px;
+  transition: transform 180ms ease;
+}
+
+.step-chevron::before {
+  content: "▾";
+}
+
+.step-item.is-open .step-chevron {
+  color: var(--ce-white);
+  transform: rotate(180deg);
+}
+
+.step-body {
+  display: none;
+  padding: 12px 14px 16px;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.step-item.is-open .step-body {
+  display: block;
+}
+
+/* -------- Option cards (inside accordion) -------- */
+
+.option-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.option-card {
+  position: relative;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 6px;
+  min-width: 0;
+  padding: 8px 6px 8px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ce-white);
+  cursor: pointer;
+  text-align: center;
+  transition: border-color 140ms ease, background 140ms ease, transform 140ms ease;
+}
+
+.option-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(255, 255, 255, 0.24);
+}
+
+.option-card.active {
+  border: 2px solid var(--ce-red);
+  background: rgba(162, 29, 33, 0.18);
+}
+
+.option-card.is-hidden,
+.step-item.is-hidden {
+  display: none;
+}
+
+.option-card[disabled] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.option-card .thumb {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 64px;
+  padding: 2px;
+  border-radius: 4px;
+  background: #ffffff;
+  overflow: hidden;
+}
+
+/* "COP & Handrail Finish": one step, two sections (COP on top, Handrail below), each with compact
+   swatches so the merged step doesn't grow much taller than a single finish step (client, 2026-09-25). */
+.option-section + .option-section {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.option-section__label {
+  margin: 0 0 8px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+}
+
+.option-grid--compact {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.option-grid--compact .option-card {
+  gap: 4px;
+  padding: 5px 4px 6px;
+}
+
+.option-grid--compact .option-card .thumb {
+  height: 38px;
+}
+
+.option-grid--compact .option-card .thumb .swatch {
+  width: 30px !important;
+  height: 30px !important;
+}
+
+.option-grid--compact .option-card .check {
+  top: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  font-size: 8px;
+}
+
+.option-grid--compact .option-card .label {
+  min-height: 20px;
+  font-size: 8.5px;
+  line-height: 1.15;
+}
+
+/* PNG icon thumbnail (Door Style + Lighting) — fills the thumb, square icon centered.
+   A taller thumb + slight zoom (trims the icon's outer margin) so it covers more of the card. */
+.option-card .thumb:has(.thumb-img) {
+  height: 84px;
+}
+.option-card .thumb .thumb-img {
+  width: 100%;
+  height: 100%;
+  background-size: auto 118%;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.option-card .check {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  display: none;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--ce-red);
+  color: var(--ce-white);
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1;
+  z-index: 2;
+  box-shadow: 0 2px 6px rgba(162, 29, 33, 0.5);
+}
+
+.option-card.active .check {
+  display: grid;
+}
+
+.option-card .label {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  min-height: 24px;
+  color: var(--ce-white);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.15px;
+  line-height: 1.2;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+/* -------- Compact thumb art (inside .option-card .thumb) -------- */
+/* Same approach as the old summary-thumb: redefine artwork at small size. */
+
+.option-card .thumb .gate-thumb,
+.option-card .thumb .cab-thumb {
+  width: 32px !important;
+  height: 52px !important;
+  border-width: 2px !important;
+  border-color: #444 !important;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5) !important;
+  transform: none !important;
+}
+
+.option-card .thumb .gate-thumb.bifold::before {
+  top: 2px !important;
+  bottom: 2px !important;
+  border-left-width: 1.5px !important;
+}
+
+.option-card .thumb .gate-thumb.sliding::before,
+.option-card .thumb .gate-thumb.sliding::after {
+  width: 9px !important;
+  border-width: 1px !important;
+  top: 2px !important;
+  bottom: 2px !important;
+}
+
+.option-card .thumb .gate-thumb.sliding::before {
+  left: 2px !important;
+}
+
+.option-card .thumb .gate-thumb.sliding::after {
+  right: 2px !important;
+}
+
+.option-card .thumb .cab-thumb.recessed::before,
+.option-card .thumb .cab-thumb.recessed::after {
+  left: 4px !important;
+  width: 20px !important;
+  height: 14px !important;
+  border-width: 1px !important;
+  box-shadow: inset 0 0 0 1px rgba(48, 20, 7, 0.3) !important;
+}
+
+.option-card .thumb .cab-thumb.recessed::before {
+  top: 4px !important;
+}
+
+.option-card .thumb .cab-thumb.recessed::after {
+  bottom: 4px !important;
+}
+
+.option-card .thumb .cab-thumb.stripe::before {
+  left: 3px !important;
+  right: 3px !important;
+  top: 18px !important;
+  height: 3px !important;
+  border-radius: 2px !important;
+}
+
+.option-card .thumb .cab-thumb.raised::before,
+.option-card .thumb .cab-thumb.glass::before {
+  inset: 4px !important;
+  border-width: 1px !important;
+}
+
+.option-card .thumb .cop-thumb {
+  width: 18px !important;
+  height: 50px !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.45) !important;
+  transform: none !important;
+}
+
+.option-card .thumb .cop-thumb::before {
+  width: 9px !important;
+  height: 9px !important;
+  margin: 4px auto 4px !important;
+}
+
+.option-card .thumb .cop-thumb::after {
+  width: 2px !important;
+  height: 2px !important;
+  box-shadow: 0 5px 0 #777, 0 10px 0 #777, 0 15px 0 #777 !important;
+}
+
+.option-card .thumb .cop-thumb.short-rath {
+  height: 32px !important;
+  box-shadow:
+    inset 0 0 0 1px rgba(0, 0, 0, 0.45),
+    0 14px 0 0 #d0d0d0,
+    0 14px 0 1px rgba(0, 0, 0, 0.25) !important;
+}
+
+.option-card .thumb .swatch {
+  width: 52px !important;
+  height: 52px !important;
+  border-radius: 4px !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18) !important;
+}
+
+.option-card .thumb .metal,
+.option-card .thumb .lights-thumb {
+  width: 48px !important;
+  height: 48px !important;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18) !important;
+}
+
+.option-card .thumb .lights-thumb .dot {
+  width: 8px !important;
+  height: 8px !important;
+  box-shadow: 0 0 3px 1px rgba(255, 255, 255, 0.4) !important;
+}
+
+.option-card .thumb .lights-thumb.lights-two {
+  grid-template-columns: repeat(2, 8px) !important;
+  gap: 4px !important;
+}
+
+.option-card .thumb .lights-thumb.lights-four {
+  grid-template-columns: repeat(2, 8px) !important;
+  grid-template-rows: repeat(2, 8px) !important;
+  gap: 4px !important;
+}
+
+.option-card .thumb .lights-thumb.diamond .dot:nth-child(1) {
+  left: 20px !important;
+  top: 5px !important;
+}
+
+.option-card .thumb .lights-thumb.diamond .dot:nth-child(2) {
+  right: 5px !important;
+  top: 20px !important;
+}
+
+.option-card .thumb .lights-thumb.diamond .dot:nth-child(3) {
+  left: 20px !important;
+  bottom: 5px !important;
+}
+
+.option-card .thumb .lights-thumb.diamond .dot:nth-child(4) {
+  left: 5px !important;
+  top: 20px !important;
+}
+
+.option-card .thumb .rail-thumb {
+  width: 46px !important;
+  height: 6px !important;
+  border-radius: 5px !important;
+  transform: rotate(8deg);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+.option-card .thumb .rail-thumb.curved {
+  width: 36px !important;
+  height: 14px !important;
+  border-width: 3px !important;
+  transform: none;
+  box-shadow: none !important;
+}
+
+.option-card .thumb .rail-thumb.wide {
+  height: 8px !important;
+}
+
+.option-card .thumb .rail-thumb.flat {
+  height: 5px !important;
+}
+
+/* -------- Thumb art (intrinsic / full-size definitions) -------- */
+
+.gate-thumb {
+  position: relative;
+  width: 110px;
+  height: 188px;
+  border: 6px solid #8a8a8a;
+  background: linear-gradient(135deg, #efefef, #a8a8a8);
+  box-shadow: inset 0 0 0 3px rgba(255, 255, 255, 0.34), 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.gate-thumb.accordion {
+  background:
+    repeating-linear-gradient(125deg, rgba(32, 32, 32, 0.62) 0 2px, transparent 2px 10px),
+    linear-gradient(135deg, #f3f3f3, #999);
+}
+
+.gate-thumb.bifold::before {
+  content: "";
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  left: 50%;
+  border-left: 3px solid rgba(24, 24, 24, 0.55);
+}
+
+.gate-thumb.sliding::before,
+.gate-thumb.sliding::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  width: 30px;
+  border: 2px solid rgba(18, 18, 18, 0.36);
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.72), rgba(100, 100, 100, 0.18));
+}
+
+.gate-thumb.sliding::before {
+  left: 8px;
+}
+
+.gate-thumb.sliding::after {
+  right: 8px;
+}
+
+.cab-thumb {
+  position: relative;
+  width: 110px;
+  height: 188px;
+  border: 6px solid rgba(0, 0, 0, 0.18);
+  background: linear-gradient(90deg, #c9c9c9, #f7f7f7 48%, #b8b8b8);
+  box-shadow: inset 0 16px 24px rgba(255, 255, 255, 0.42), inset 0 -18px 24px rgba(0, 0, 0, 0.13), 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.cab-thumb.flat {
+  border-color: rgba(0, 0, 0, 0.14);
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.36), transparent 18% 82%, rgba(0, 0, 0, 0.12)),
+    linear-gradient(135deg, #9a6a3e, #d1a06a 48%, #80522d);
+}
+
+.cab-thumb.recessed {
+  background:
+    linear-gradient(90deg, rgba(0, 0, 0, 0.18), transparent 12%, transparent 88%, rgba(0, 0, 0, 0.18)),
+    linear-gradient(135deg, #6e381d, #b1713c 46%, #442412);
+}
+
+.cab-thumb.recessed::before,
+.cab-thumb.recessed::after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  width: 60px;
+  height: 56px;
+  border: 3px solid rgba(255, 221, 170, 0.3);
+  box-shadow: inset 0 0 0 3px rgba(48, 20, 7, 0.3);
+}
+
+.cab-thumb.recessed::before {
+  top: 22px;
+}
+
+.cab-thumb.recessed::after {
+  bottom: 22px;
+}
+
+.cab-thumb.stripe::before {
+  content: "";
+  position: absolute;
+  left: 14px;
+  right: 14px;
+  top: 60px;
+  height: 10px;
+  border-radius: 8px;
+  background: rgba(79, 43, 20, 0.62);
+}
+
+.cab-thumb.raised::before,
+.cab-thumb.glass::before {
+  content: "";
+  position: absolute;
+  inset: 16px;
+  border: 3px solid rgba(255, 221, 170, 0.36);
+}
+
+.cab-thumb.steel {
+  background: linear-gradient(90deg, #a8aaac, #fbfbfb 48%, #8f9295);
+}
+
+.cab-thumb.glass {
+  background:
+    linear-gradient(120deg, rgba(255, 255, 255, 0.72), rgba(205, 230, 240, 0.16) 42%, rgba(255, 255, 255, 0.62)),
+    linear-gradient(135deg, #9c6c42, #d0a575);
+}
+
+.cop-thumb {
+  width: 60px;
+  height: 188px;
+  border-radius: 3px;
+  background: linear-gradient(#9d9d9d, #d4d4d4);
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.2), 0 8px 18px rgba(0, 0, 0, 0.12);
+}
+
+.cop-thumb.black {
+  background: linear-gradient(#161616, #343434);
+}
+
+.cop-thumb.white {
+  background: linear-gradient(#f8f8f8, #d9d9d9);
+}
+
+.cop-thumb::before {
+  content: "";
+  display: block;
+  width: 26px;
+  height: 30px;
+  margin: 14px auto 14px;
+  border-radius: 3px;
+  background: #05070a;
+}
+
+.cop-thumb::after {
+  content: "";
+  display: block;
+  width: 8px;
+  height: 8px;
+  margin: 0 auto;
+  border-radius: 50%;
+  background: #d7d7d7;
+  box-shadow: 0 18px 0 #d7d7d7, 0 36px 0 #d7d7d7, 0 54px 0 #d7d7d7;
+}
+
+.cop-thumb.short-rath {
+  height: 132px;
+  overflow: visible;
+  box-shadow:
+    inset 0 0 0 2px rgba(0, 0, 0, 0.2),
+    0 70px 0 -2px #d9d9d9,
+    0 70px 0 0 rgba(0, 0, 0, 0.18);
+}
+
+.rail-thumb {
+  width: 170px;
+  height: 22px;
+  border-radius: 22px;
+  background: linear-gradient(#f5f5f5, #6d6d6d 46%, #e8e8e8 58%, #555);
+  transform: rotate(10deg);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.18);
+}
+
+.rail-thumb.curved {
+  width: 130px;
+  height: 60px;
+  border: 10px solid #7a7a7a;
+  border-left-color: transparent;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  background: transparent;
+  transform: none;
+  box-shadow: none;
+}
+
+.rail-thumb.flat {
+  height: 18px;
+  border-radius: 2px;
+  background: linear-gradient(#777, #222);
+}
+
+.rail-thumb.wide {
+  height: 26px;
+}
+
+.metal {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  background: conic-gradient(from 20deg, #f6f6f6, #747474, #e9e9e9, #9d9d9d, #fbfbfb);
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.14);
+}
+
+.metal.brass {
+  background: conic-gradient(from 20deg, #f0d384, #8b682a, #ffe7a4, #b58a39, #f4d487);
+}
+
+.metal.oil {
+  background: conic-gradient(from 20deg, #3b2417, #0d0907, #7b4b2a, #21130d, #5f331b);
+}
+
+.metal.nickel {
+  background: conic-gradient(from 20deg, #e7e2d6, #9c9587, #f6f2e8, #bab2a3, #eee9df);
+}
+
+.metal.bronze {
+  background: conic-gradient(from 20deg, #9a4b19, #4a1d0a, #c47738, #6b2c10, #d58a45);
+}
+
+.lights-thumb {
+  width: 150px;
+  height: 150px;
+  border-radius: 14px;
+  background: #151515;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.2);
+}
+
+.lights-thumb .dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffffff 0 35%, #cfd0c8 37% 58%, #282828 60%);
+  box-shadow: 0 0 18px 4px rgba(255, 255, 255, 0.45);
+}
+
+.lights-two {
+  grid-template-columns: repeat(2, 30px);
+  gap: 14px;
+}
+
+.lights-four {
+  grid-template-columns: repeat(2, 30px);
+  grid-template-rows: repeat(2, 30px);
+  gap: 12px;
+}
+
+.lights-thumb.diamond {
+  position: relative;
+  display: block;
+}
+
+.lights-thumb.diamond .dot {
+  position: absolute;
+}
+
+.lights-thumb.diamond .dot:nth-child(1) {
+  left: 60px;
+  top: 18px;
+}
+
+.lights-thumb.diamond .dot:nth-child(2) {
+  right: 18px;
+  top: 60px;
+}
+
+.lights-thumb.diamond .dot:nth-child(3) {
+  left: 60px;
+  bottom: 18px;
+}
+
+.lights-thumb.diamond .dot:nth-child(4) {
+  left: 18px;
+  top: 60px;
+}
+
+.swatch {
+  width: 170px;
+  height: 170px;
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12), 0 10px 22px rgba(0, 0, 0, 0.14);
+}
+
+.wood-palomino {
+  background:
+    repeating-linear-gradient(90deg, rgba(67, 31, 11, 0.1) 0 3px, transparent 3px 8px),
+    linear-gradient(135deg, #8c5027, #c08142 52%, #6d371a);
+}
+
+.wood-walnut {
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 229, 180, 0.07) 0 2px, transparent 2px 7px),
+    linear-gradient(135deg, #35180c, #6a3319 58%, #1f0d07);
+}
+
+.wood-birch {
+  background:
+    repeating-linear-gradient(90deg, rgba(98, 55, 18, 0.09) 0 2px, transparent 2px 9px),
+    linear-gradient(135deg, #dca15f, #efc78e 55%, #c98643);
+}
+
+.wood-oak {
+  background:
+    repeating-linear-gradient(90deg, rgba(49, 30, 11, 0.1) 0 3px, transparent 3px 10px),
+    linear-gradient(135deg, #a96328, #d09350 50%, #7e461e);
+}
+
+.wood-cherry {
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 226, 190, 0.08) 0 3px, transparent 3px 9px),
+    linear-gradient(135deg, #5c2513, #9b4a25 50%, #321208);
+}
+
+.wood-maple {
+  background:
+    repeating-linear-gradient(90deg, rgba(92, 61, 28, 0.08) 0 2px, transparent 2px 8px),
+    linear-gradient(135deg, #cfaa73, #f1d7a8 54%, #a97e4f);
+}
+
+.wood-gibraltar {
+  background:
+    repeating-linear-gradient(90deg, rgba(45, 34, 23, 0.09) 0 3px, transparent 3px 9px),
+    linear-gradient(135deg, #8f7b61, #c0ae91 52%, #5f503e);
+}
+
+.wood-alabaster,
+.solid-white {
+  background: linear-gradient(135deg, #faf8f1, #ded9cc);
+}
+
+.wood-mdf {
+  background:
+    repeating-linear-gradient(0deg, rgba(70, 55, 42, 0.08) 0 2px, transparent 2px 7px),
+    linear-gradient(135deg, #b69c79, #d8c5a6 50%, #8c7457);
+}
+
+.solid-black {
+  background: linear-gradient(135deg, #090909, #3a3632);
+}
+
+.solid-beige {
+  background: linear-gradient(135deg, #c8b596, #eee0c4);
+}
+
+.solid-grey {
+  background: linear-gradient(135deg, #747a7d, #c6c8c7);
+}
+
+/* -------- Viewer -------- */
+
+.viewer {
+  position: relative;
+  min-width: 0;
+  overflow: hidden;
+  background: linear-gradient(90deg, #111, #333 8%, #1e1e1e 14%, #050505 17%, #111 83%, #3a3a3a 92%, #111);
+}
+
+.viewer:fullscreen {
+  width: 100vw;
+  height: 100vh;
+}
+
+#elevatorCanvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+}
+
+#elevatorCanvas:active {
+  cursor: grabbing;
+}
+
+.model-status {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  min-width: 160px;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 4px;
+  background: rgba(0, 0, 0, 0.72);
+  color: var(--ce-white);
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transform: translate(-50%, -50%);
+  transition: opacity 180ms ease, visibility 180ms ease;
+}
+
+.model-status.hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* -------- Boot loader (full-screen; up until model + every texture are ready) -------- */
+
+.app-loader {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: radial-gradient(circle at 50% -10%, #2d2d2d 0, #050505 58%);
+  opacity: 1;
+  transition: opacity 0.5s ease;
+}
+
+.app-loader.is-hidden {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.app-loader__inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 22px;
+  width: min(300px, 64vw);
+  text-align: center;
+}
+
+.app-loader__logo {
+  width: 190px;
+  max-width: 62%;
+  height: auto;
+  opacity: 0.92;
+}
+
+.app-loader__bar {
+  width: 100%;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  overflow: hidden;
+}
+
+.app-loader__fill {
+  display: block;
+  height: 100%;
+  width: 0%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--ce-red), var(--ce-red-strong));
+  transition: width 0.3s ease;
+}
+
+.app-loader__text {
+  font: 500 12px/1 "Inter", system-ui, sans-serif;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.66);
+}
+
+/* -------- View rail (right) -------- */
+
+.view-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 22px 8px;
+  background: var(--ce-sidebar-bg);
+  border-left: 1px solid var(--ce-sidebar-border);
+}
+
+.view-button {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+  padding: 6px 4px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ce-white);
+  cursor: pointer;
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  transition: background 140ms ease, color 140ms ease;
+}
+
+.view-button:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.view-button.active {
+  color: var(--ce-red);
+}
+
+.view-icon {
+  display: block;
+  width: 26px;
+  height: 26px;
+  background: currentColor;
+  mask: url("assets/icons/camera.svg") center / contain no-repeat;
+  -webkit-mask: url("assets/icons/camera.svg") center / contain no-repeat;
+}
+
+/* -------- Responsive -------- */
+
+@media (max-width: 1024px) {
+  body {
+    overflow: auto;
+  }
+
+  .configurator {
+    grid-template-columns: 1fr;
+    /* +80px on every clamp bound reclaims the vertical space .sidebar-brand used to take (measured
+       78px: 20px+16px padding + 1px border + the ~41px logo at its mobile width) — see the
+       .sidebar-brand rule below, client asked for that freed space to go to the 3D viewer. */
+    grid-template-rows: clamp(400px, calc(48vh + 80px), 600px) auto auto;
+    height: auto;
+    min-height: 100vh;
+  }
+
+  .sidebar {
+    order: 3;
+    max-height: none;
+    border-right: 0;
+    border-top: 1px solid var(--ce-sidebar-border);
+  }
+
+  /* Client, 2026-09-07: the logo used to sit here, between the view-rail (order 2, right above) and
+     the step list below — "in the way", taking up vertical space the client wants back for the 3D
+     viewer. Dropped on mobile only (still shows on desktop, .sidebar-brand above); the view buttons
+     end up sitting directly on top of the step list where the logo used to be, no other layout change
+     needed since display:none removes it (and its border-bottom) from flow entirely. */
+  .sidebar-brand {
+    display: none;
+  }
+
+  .step-nav {
+    overflow-y: visible;
+  }
+
+  .viewer {
+    order: 1;
+    min-height: clamp(400px, calc(48vh + 80px), 600px); /* keep in sync with .configurator's row above */
+  }
+
+  /* Client, 2026-08-13: on mobile the view buttons used to sit after the whole config step list (order
+     3), so by the time a user scrolled down to them the viewer they control was long off-screen above —
+     "kinda irrelevant after you've already chosen the options". Moved to right after the viewer (order
+     2, before the step list) so switching Front/Back/Left/Right/Center stays attached to what it's
+     controlling instead of feeling like an unrelated afterthought at the bottom of the page. */
+  .view-rail {
+    order: 2;
+    flex-direction: row;
+    justify-content: center;
+    gap: 28px;
+    padding: 14px;
+    border-left: 0;
+    border-top: 1px solid var(--ce-sidebar-border);
+  }
+}
+
+@media (max-width: 640px) {
+  .sidebar-brand img {
+    width: 140px;
+  }
+
+  .option-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* keep the compact COP/Handrail finish swatches at 3 columns on phones too */
+  .option-grid.option-grid--compact {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+/* -------- Step 2: quote CTA + modal -------- */
+
+.quote-cta {
+  margin: 14px 16px 18px;
+  padding: 14px 18px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--ce-red), var(--ce-red-strong));
+  color: var(--ce-white);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 10px 26px rgba(162, 29, 33, 0.32);
+}
+
+.quote-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 14px 32px rgba(162, 29, 33, 0.42);
+}
+
+.quote-modal[hidden] {
+  display: none;
+}
+
+.quote-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 3vh 3vw;
+}
+
+.quote-modal__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(8, 8, 8, 0.66);
+  backdrop-filter: blur(2px);
+}
+
+.quote-modal__dialog {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  width: 90vw;
+  height: 90vh;
+  max-width: 1280px;
+  background: var(--ce-white);
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--ce-shadow);
+}
+
+.quote-modal__close {
+  position: absolute;
+  top: 14px;
+  right: 16px;
+  z-index: 2;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.06);
+  color: var(--ce-ink);
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.quote-modal__close:hover {
+  background: var(--ce-red);
+  color: var(--ce-white);
+}
+
+.quote-modal__summary {
+  padding: 36px 34px;
+  background: #f6f4f0;
+  border-right: 1px solid var(--ce-line);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.quote-modal__summary h2,
+.quote-modal__form h2 {
+  margin: 0 0 20px;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--ce-ink);
+}
+
+.quote-summary {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-auto-rows: 1fr;
+  gap: 12px;
+  min-height: 0;
+}
+
+.summary-line {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 14px 16px;
+  border: 1px solid var(--ce-line);
+  border-radius: 13px;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.summary-thumb {
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  border: 1px solid var(--ce-line);
+  background-color: #fff;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.summary-thumb.is-icon {
+  position: relative;
+  background: linear-gradient(135deg, #f3efe9, #e7e1d8);
+}
+
+.summary-thumb.is-icon::before {
+  content: "";
+  position: absolute;
+  inset: 15px;
+  background: var(--ce-red);
+  -webkit-mask: var(--step-icon) center / contain no-repeat;
+  mask: var(--step-icon) center / contain no-repeat;
+}
+
+.summary-line__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.summary-line__label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ce-muted);
+}
+
+.summary-line__value {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ce-ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.quote-modal__form {
+  padding: 44px 40px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.quote-form__intro {
+  margin: 0 0 8px;
+  font-size: 14px;
+  color: var(--ce-muted);
+  line-height: 1.5;
+}
+
+/* Client, 2026-09-28: mark which quote-form fields are required. */
+.quote-form__required-note {
+  margin: 0 0 20px;
+  font-size: 12px;
+  color: var(--ce-muted);
+}
+
+.required-mark {
+  color: var(--ce-red);
+}
+
+#quoteForm {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.quote-field {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.quote-field span {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--ce-muted);
+}
+
+.quote-field input {
+  padding: 13px 14px;
+  border: 1px solid var(--ce-line);
+  border-radius: 10px;
+  font-size: 15px;
+  color: var(--ce-ink);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.quote-field input:focus {
+  outline: none;
+  border-color: var(--ce-red);
+  box-shadow: 0 0 0 3px rgba(162, 29, 33, 0.14);
+}
+
+.quote-field input.invalid {
+  border-color: var(--ce-red-strong);
+  box-shadow: 0 0 0 3px rgba(194, 23, 30, 0.16);
+}
+
+.quote-submit {
+  margin-top: 8px;
+  padding: 15px 20px;
+  border: 0;
+  border-radius: 11px;
+  background: linear-gradient(135deg, var(--ce-red), var(--ce-red-strong));
+  color: var(--ce-white);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.quote-submit:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(162, 29, 33, 0.36);
+}
+
+.quote-form__status {
+  margin: 6px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+  min-height: 20px;
+}
+
+.quote-form__status.ok {
+  color: #1d7a3a;
+}
+
+.quote-form__status.err {
+  color: var(--ce-red-strong);
+}
+
+/* Client, 2026-09-25: legal disclaimer below the Submit Request button. */
+#quoteForm .quote-form__status:empty {
+  display: none; /* no reserved gap between the button and the disclaimer until a message shows */
+}
+
+.quote-disclaimer {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--ce-muted);
+}
+
+@media (max-width: 860px) {
+  .quote-modal__dialog {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+    width: 94vw;
+    height: 92vh;
+  }
+
+  .quote-modal__summary {
+    border-right: 0;
+    border-bottom: 1px solid var(--ce-line);
+    max-height: 40vh;
+  }
+
+  .quote-summary {
+    grid-template-columns: 1fr;
+  }
+}

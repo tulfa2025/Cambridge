@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cambridge Elevating Configurator</title>
+    <link rel="stylesheet" href="styles.css?v=20260928-required-note-01" />
+  </head>
+  <body>
+    <div class="app-loader" id="appLoader" role="status" aria-live="polite">
+      <div class="app-loader__inner">
+        <img class="app-loader__logo" src="assets/brand/cambridge-elevating-white.png" alt="Cambridge Elevating" />
+        <div class="app-loader__bar"><span class="app-loader__fill" id="appLoaderFill"></span></div>
+        <div class="app-loader__text" id="appLoaderText">Loading 0%</div>
+      </div>
+    </div>
+
+    <main class="configurator">
+      <aside class="sidebar" aria-label="Configuration steps">
+        <a class="sidebar-brand" href="#" aria-label="Cambridge Elevating">
+          <img src="assets/brand/cambridge-elevating-white.png" alt="Cambridge Elevating" />
+        </a>
+        <nav class="step-nav" id="stepNav"></nav>
+        <button class="quote-cta" id="openQuote" type="button">
+          Review &amp; Request Quote
+        </button>
+      </aside>
+
+      <section class="viewer" aria-label="Live 3D elevator preview">
+        <canvas id="elevatorCanvas"></canvas>
+        <div class="model-status" id="modelStatus">Loading model</div>
+      </section>
+
+      <aside class="view-rail" aria-label="Camera view controls">
+        <button class="view-button active" type="button" data-view="front" aria-pressed="true">
+          <span class="view-icon front"></span>
+          <span>Front</span>
+        </button>
+        <button class="view-button" type="button" data-view="back" aria-pressed="false">
+          <span class="view-icon back"></span>
+          <span>Back</span>
+        </button>
+        <button class="view-button" type="button" data-view="left" aria-pressed="false">
+          <span class="view-icon left"></span>
+          <span>Left</span>
+        </button>
+        <button class="view-button" type="button" data-view="right" aria-pressed="false">
+          <span class="view-icon right"></span>
+          <span>Right</span>
+        </button>
+        <button class="view-button" type="button" data-view="center" aria-pressed="false">
+          <span class="view-icon center"></span>
+          <span>Center</span>
+        </button>
+      </aside>
+    </main>
+
+    <!-- Step 2: review configuration + request a quote -->
+    <div class="quote-modal" id="quoteModal" hidden>
+      <div class="quote-modal__overlay" data-quote-close></div>
+      <div class="quote-modal__dialog" role="dialog" aria-modal="true" aria-labelledby="quoteTitle">
+        <button class="quote-modal__close" type="button" data-quote-close aria-label="Close">&times;</button>
+
+        <section class="quote-modal__summary">
+          <h2 id="quoteTitle">Your Configuration</h2>
+          <div class="quote-summary" id="quoteSummary"></div>
+        </section>
+
+        <section class="quote-modal__form">
+          <h2>Request a Quote</h2>
+          <p class="quote-form__intro">Enter your details and we'll get back to you with a quote for this configuration.</p>
+          <p class="quote-form__required-note">Fields marked with <span class="required-mark">*</span> are required.</p>
+          <form id="quoteForm" novalidate>
+            <label class="quote-field">
+              <span>Name <span class="required-mark">*</span></span>
+              <input type="text" name="name" autocomplete="name" required />
+            </label>
+            <label class="quote-field">
+              <span>State/Province <span class="required-mark">*</span></span>
+              <input type="text" name="state" autocomplete="address-level1" required />
+            </label>
+            <label class="quote-field">
+              <span>Company</span>
+              <input type="text" name="company" autocomplete="organization" />
+            </label>
+            <label class="quote-field">
+              <span>Email <span class="required-mark">*</span></span>
+              <input type="email" name="email" autocomplete="email" required />
+            </label>
+            <label class="quote-field">
+              <span>Phone <span class="required-mark">*</span></span>
+              <input type="tel" name="phone" autocomplete="tel" required />
+            </label>
+            <button class="quote-submit" type="submit">Submit Request</button>
+            <p class="quote-form__status" id="quoteStatus" role="status"></p>
+            <p class="quote-disclaimer">Disclaimer: Cab images are for illustrative purposes only and may not exactly represent the final supplied product. Flooring is not supplied with the elevator, it is provided by others; flooring shown is an example only. The number of lights is determined by cab size and may differ from what is shown.</p>
+          </form>
+        </section>
+      </div>
+    </div>
+
+    <script type="module">
+      // materials-v2 (triplanar) era el workaround para las UVs malas del GLB viejo. El GLB
+      // actual trae UVs reales, así que NO se usa. Solo se carga con ?materials=v2 Y ?model=legacy,
+      // para no afectar el link público aunque alguien arrastre el ?materials=v2 viejo.
+      const params = new URLSearchParams(window.location.search);
+      if (params.get("materials") === "v2" && params.get("model") === "legacy") {
+        await import("./materials-v2.js?v=20260602-3d-team-lighting-03");
+      }
+    </script>
+    <script type="module" src="app.js?v=20260930-cop-revision2-02"></script>
+  </body>
+</html>
