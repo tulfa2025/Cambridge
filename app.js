@@ -1979,7 +1979,7 @@ const HANDRAIL_FLAT_COLORS = {
 // envMapIntensity while material.envMap is null (it uses scene.environmentIntensity), so GATE_FINISH_ENV_OVERRIDE
 // can't do this job.
 const STAINLESS_DOOR_TINT = 0xa6bcd8;
-const STAINLESS_ENV_BOOST = 3.5;
+const STAINLESS_ENV_BOOST = 4.2;
 const GATE_FINISH_TINT = { alumifoldBlackPerf: 0x262626, bifoldStainless: STAINLESS_DOOR_TINT, slidingStainless: STAINLESS_DOOR_TINT };
 
 // Sliding-door "Beige Powder Coat": client, 2026-08-13, gave RAL 1013 as the target ("Looks dark... needs
