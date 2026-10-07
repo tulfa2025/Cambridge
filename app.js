@@ -55,7 +55,7 @@ const options = [
     type: "swatch",
     items: [
       { id: "bifoldWhite", label: "White", thumb: "solid-white", gate: "bifold", color: 0xf1eee7, metalness: 0.18, roughness: 0.42 },
-      { id: "bifoldStainless", label: "Stainless", thumb: "metal", gate: "bifold", color: 0xd8d8d3, metalness: 0.8, roughness: 0.28, tile: 3, texture: "./assets/textures/fixtures/stainless-brushed.png" },
+      { id: "bifoldStainless", label: "Stainless", thumb: "metal", gate: "bifold", color: 0xd8d8d3, metalness: 0.8, roughness: 0.28, tile: 3.2, /* grain density matched to cab walls, see HANDOFF #88c */ texture: "./assets/textures/fixtures/stainless-brushed.png" },
       // 2026-09-19: real client photo textures (delivered in "Accordion Gates" folder), replacing the
       // old flat hex color + shared generic opacity.png mask. Each finish's own color PNG can't serve as
       // its own alphaMap (alpha channel is uniformly 255 — the cutout pattern lives in RGB color only,
@@ -86,7 +86,7 @@ const options = [
       { id: "visifoldBronzeTinted", label: "Visifold Bronze, Tinted Panels", thumb: "metal bronze", gate: "accordion", glass: true, color: 0x9f8f82, metalness: 0.62, roughness: 0.3 },
       { id: "visifoldClearClear", label: "Visifold Clear, Clear Panels", thumb: "metal", gate: "accordion", glass: true, color: 0xc7c8c4, metalness: 0.72, roughness: 0.22 },
       { id: "visifoldClearTinted", label: "Visifold Clear, Tinted Panels", thumb: "metal", gate: "accordion", glass: true, color: 0xffffff, metalness: 1, roughness: 0.3 },
-      { id: "slidingStainless", label: "Stainless Steel", thumb: "metal", gate: "sliding", color: 0xd8d8d3, metalness: 0.8, roughness: 0.28, tile: 3, texture: "./assets/textures/fixtures/stainless-brushed.png" },
+      { id: "slidingStainless", label: "Stainless Steel", thumb: "metal", gate: "sliding", color: 0xd8d8d3, metalness: 0.8, roughness: 0.28, tile: 2.9, /* grain density matched to cab walls, see HANDOFF #88c */ texture: "./assets/textures/fixtures/stainless-brushed.png" },
       { id: "slidingBeige", label: "Beige Powder Coat", thumb: "solid-beige", gate: "sliding", color: 0xfff2d1, metalness: 0.2, roughness: 0.48 },
       { id: "slidingBlack", label: "Black Powder Coat", thumb: "solid-black", gate: "sliding", texture: "./assets/textures/fixtures/black-textured-01.jpg", metalness: 0.32, roughness: 0.48, tile: 10 },
       { id: "slidingGrey", label: "Grey Powder Coat", thumb: "solid-grey", gate: "sliding", texture: "./assets/textures/fixtures/grey-01.jpg", metalness: 0.28, roughness: 0.44 },
