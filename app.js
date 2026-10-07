@@ -1716,6 +1716,17 @@ function applyGateFinish() {
   // envMapIntensity override (GATE_FINISH_ENV_OVERRIDE): applyMaterialToTargets() clones the material
   // and re-runs tuneMaterialForRender() on the clone, which resets envMapIntensity to the global default
   // — so this has to run AFTER, directly on the live scene node, not inside the material factory.
+  if (finish.id === "bifoldStainless" || finish.id === "slidingStainless") {
+    (targetMap[state.gate] || []).forEach((name) => {
+      findObject(name)?.traverse((child) => {
+        if (child.isMesh && child.material && scene.environment) {
+          child.material.envMap = scene.environment;
+          child.material.envMapIntensity = scene.environmentIntensity * STAINLESS_ENV_BOOST;
+          child.material.needsUpdate = true;
+        }
+      });
+    });
+  }
   const envOverride = GATE_FINISH_ENV_OVERRIDE[finish.id];
   if (envOverride !== undefined) {
     (targetMap[state.gate] || []).forEach((name) => {
@@ -1961,7 +1972,15 @@ const HANDRAIL_FLAT_COLORS = {
 // opaque, black/hole islands -> transparent), but using the photo's own pixel colour for the opaque
 // region would render the metal WHITE, not black. Tint multiplies that white metal area down to the
 // same 0x262626 as alumifoldBlackSolid, while the (already-transparent) hole pixels don't matter.
-const GATE_FINISH_TINT = { alumifoldBlackPerf: 0x262626 };
+// Stainless doors: client, 2026-10-07, "the stainless steel looks more bronze now". The brushed texture is a
+// neutral grey; the warm cast is the HDRI (warm ceiling/floor) reflected by the 0.8-metalness material. A cool
+// tint multiplies the warmth out (measured door R/B 1.25 -> 1.00); STAINLESS_ENV_BOOST buys back the brightness the
+// tint costs. Applied in applyGateFinish() with an explicit material.envMap: three r165 ignores a material's own
+// envMapIntensity while material.envMap is null (it uses scene.environmentIntensity), so GATE_FINISH_ENV_OVERRIDE
+// can't do this job.
+const STAINLESS_DOOR_TINT = 0xb0c0d8;
+const STAINLESS_ENV_BOOST = 2.1;
+const GATE_FINISH_TINT = { alumifoldBlackPerf: 0x262626, bifoldStainless: STAINLESS_DOOR_TINT, slidingStainless: STAINLESS_DOOR_TINT };
 
 // Sliding-door "Beige Powder Coat": client, 2026-08-13, gave RAL 1013 as the target ("Looks dark... needs
 // to be more beige"). The shared beige-01.jpg fixture photo is a near-flat sage-green, not beige (see
