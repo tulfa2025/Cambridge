@@ -224,7 +224,7 @@ const state = {
   gate: "bifold",
   // Client (Matt Carey), 2026-10-07: standard options pre-selected as the customer's starting configuration.
   gateFinish: "bifoldStainless",
-  cabStyle: "flatVeneer",
+  cabStyle: "recessedFour",
   cabFinish: "oak",
   raisedStripeFinish: "walnutVeneer",
   lighting: "led",
