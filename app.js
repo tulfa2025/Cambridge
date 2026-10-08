@@ -1721,7 +1721,7 @@ function applyGateFinish() {
       findObject(name)?.traverse((child) => {
         if (child.isMesh && child.material && scene.environment) {
           child.material.envMap = scene.environment;
-          child.material.envMapIntensity = scene.environmentIntensity * STAINLESS_ENV_BOOST;
+          child.material.envMapIntensity = scene.environmentIntensity * (STAINLESS_ENV_BOOST_BY_FINISH[finish.id] ?? STAINLESS_ENV_BOOST);
           child.material.needsUpdate = true;
         }
       });
@@ -1980,7 +1980,12 @@ const HANDRAIL_FLAT_COLORS = {
 // can't do this job.
 const STAINLESS_DOOR_TINT = 0xa6bcd8;
 const STAINLESS_ENV_BOOST = 4.2;
-const GATE_FINISH_TINT = { alumifoldBlackPerf: 0x262626, bifoldStainless: STAINLESS_DOOR_TINT, slidingStainless: STAINLESS_DOOR_TINT };
+// Sliding sits deeper and flatter to the camera than the Bi-Fold and measured ~28% darker than the cab walls at the
+// same boost (2026-10-08), so it gets its own value. DoorWall_SD (the surround of the sliding door) only exists in
+// the Stainless Steel cab: same warm-cast problem as the door, same fix (tint + explicit envMap boost).
+const STAINLESS_ENV_BOOST_BY_FINISH = { bifoldStainless: STAINLESS_ENV_BOOST, slidingStainless: 7.4 };
+const STAINLESS_DOOR_WALL_BOOST = 9.2;
+const GATE_FINISH_TINT = { alumifoldBlackPerf: 0x262626, bifoldStainless: STAINLESS_DOOR_TINT, slidingStainless: STAINLESS_DOOR_TINT, stainlessDoorWall: STAINLESS_DOOR_TINT };
 
 // Sliding-door "Beige Powder Coat": client, 2026-08-13, gave RAL 1013 as the target ("Looks dark... needs
 // to be more beige"). The shared beige-01.jpg fixture photo is a near-flat sage-green, not beige (see
@@ -2081,12 +2086,23 @@ function applyCabStyle() {
       const tile = activeModelParam === "export5" && !EXPORT5_DOOR_WALL_NODES.has(t)
         ? 3 * EXPORT5_WALL_TILE_SCALE
         : 3;
+      const isDoorWall = EXPORT5_DOOR_WALL_NODES.has(t);
       const material = createFixtureTextureMaterial({
         texture: "./assets/textures/fixtures/stainless-brushed.png",
         metalness: 0.8, roughness: 0.28, tile, label: "Stainless Steel Cab",
         rotate: false,
+        id: isDoorWall ? "stainlessDoorWall" : undefined, // -> GATE_FINISH_TINT cool tint, door wall only
       });
       applyMaterialToTargets([t], material, { skipGlass: true });
+      if (isDoorWall && scene.environment) {
+        findObject(t)?.traverse((child) => {
+          if (child.isMesh && child.material) {
+            child.material.envMap = scene.environment;
+            child.material.envMapIntensity = scene.environmentIntensity * STAINLESS_DOOR_WALL_BOOST;
+            child.material.needsUpdate = true;
+          }
+        });
+      }
     });
   }
 }
