@@ -90,7 +90,7 @@ const options = [
       { id: "slidingBeige", label: "Beige Powder Coat", thumb: "solid-beige", gate: "sliding", color: 0xfff2d1, metalness: 0.2, roughness: 0.48 },
       { id: "slidingBlack", label: "Black Powder Coat", thumb: "solid-black", gate: "sliding", texture: "./assets/textures/fixtures/black-textured-01.jpg", metalness: 0.32, roughness: 0.48, tile: 10 },
       { id: "slidingGrey", label: "Grey Powder Coat", thumb: "solid-grey", gate: "sliding", texture: "./assets/textures/fixtures/grey-01.jpg", metalness: 0.28, roughness: 0.44 },
-      { id: "slidingBronze", label: "Low Lights Bronze", thumb: "metal bronze", gate: "sliding", color: 0xCD7F32, metalness: 0.6, roughness: 0.34, tile: 6 },
+      { id: "slidingBronze", label: "Low Lights Bronze", thumb: "metal bronze", gate: "sliding", texture: "./assets/textures/fixtures/handrail-low-lights-bronze-20260930.png", metalness: 0.6, roughness: 0.34, tile: 6 }, // client, 2026-10-08: same finish as COP/Handrail Low Lights Bronze (was flat 0xCD7F32)
       { id: "slidingGlass", label: "Glass - Stainless Panels", thumb: "metal", gate: "sliding", glass: true, color: 0xb9c1c3, metalness: 0.74, roughness: 0.22 },
     ],
   },
@@ -1993,7 +1993,7 @@ const GATE_FINISH_TINT = { alumifoldBlackPerf: 0x262626, bifoldStainless: STAINL
 // Handrail's bronze (HANDRAIL_FLAT_COLORS.bronze), so reusing that hex here.
 const GATE_FINISH_FLAT_COLORS = {
   slidingBeige: 0xeae6ca,
-  slidingBronze: 0xcd7f32,
+  // slidingBronze: now the textured Low Lights Bronze shared with COP/Handrail (client, 2026-10-08).
 };
 
 // Accordion "Vinyl White": client, 2026-08-13, reported a bright glow around each panel's edge — the
