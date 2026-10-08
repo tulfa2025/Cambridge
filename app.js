@@ -55,7 +55,7 @@ const options = [
     type: "swatch",
     items: [
       { id: "bifoldWhite", label: "White", thumb: "solid-white", gate: "bifold", color: 0xf1eee7, metalness: 0.18, roughness: 0.42 },
-      { id: "bifoldStainless", label: "Stainless", thumb: "metal", gate: "bifold", color: 0xd8d8d3, metalness: 0.8, roughness: 0.28, tile: 3, texture: "./assets/textures/fixtures/stainless-brushed.png" },
+      { id: "bifoldStainless", label: "Stainless", thumb: "metal", gate: "bifold", color: 0xd8d8d3, metalness: 0.8, roughness: 0.28, tile: 3.2, /* grain density matched to cab walls, see HANDOFF #88c */ texture: "./assets/textures/fixtures/stainless-brushed.png" },
       // 2026-09-19: real client photo textures (delivered in "Accordion Gates" folder), replacing the
       // old flat hex color + shared generic opacity.png mask. Each finish's own color PNG can't serve as
       // its own alphaMap (alpha channel is uniformly 255 — the cutout pattern lives in RGB color only,
@@ -86,11 +86,11 @@ const options = [
       { id: "visifoldBronzeTinted", label: "Visifold Bronze, Tinted Panels", thumb: "metal bronze", gate: "accordion", glass: true, color: 0x9f8f82, metalness: 0.62, roughness: 0.3 },
       { id: "visifoldClearClear", label: "Visifold Clear, Clear Panels", thumb: "metal", gate: "accordion", glass: true, color: 0xc7c8c4, metalness: 0.72, roughness: 0.22 },
       { id: "visifoldClearTinted", label: "Visifold Clear, Tinted Panels", thumb: "metal", gate: "accordion", glass: true, color: 0xffffff, metalness: 1, roughness: 0.3 },
-      { id: "slidingStainless", label: "Stainless Steel", thumb: "metal", gate: "sliding", color: 0xd8d8d3, metalness: 0.8, roughness: 0.28, tile: 3, texture: "./assets/textures/fixtures/stainless-brushed.png" },
+      { id: "slidingStainless", label: "Stainless Steel", thumb: "metal", gate: "sliding", color: 0xd8d8d3, metalness: 0.8, roughness: 0.28, tile: 2.9, /* grain density matched to cab walls, see HANDOFF #88c */ texture: "./assets/textures/fixtures/stainless-brushed.png" },
       { id: "slidingBeige", label: "Beige Powder Coat", thumb: "solid-beige", gate: "sliding", color: 0xfff2d1, metalness: 0.2, roughness: 0.48 },
       { id: "slidingBlack", label: "Black Powder Coat", thumb: "solid-black", gate: "sliding", texture: "./assets/textures/fixtures/black-textured-01.jpg", metalness: 0.32, roughness: 0.48, tile: 10 },
       { id: "slidingGrey", label: "Grey Powder Coat", thumb: "solid-grey", gate: "sliding", texture: "./assets/textures/fixtures/grey-01.jpg", metalness: 0.28, roughness: 0.44 },
-      { id: "slidingBronze", label: "Low Lights Bronze", thumb: "metal bronze", gate: "sliding", color: 0xCD7F32, metalness: 0.6, roughness: 0.34, tile: 6 },
+      { id: "slidingBronze", label: "Low Lights Bronze", thumb: "metal bronze", gate: "sliding", texture: "./assets/textures/fixtures/handrail-low-lights-bronze-20260930.png", metalness: 0.6, roughness: 0.34, tile: 6 }, // client, 2026-10-08: same finish as COP/Handrail Low Lights Bronze (was flat 0xCD7F32)
       { id: "slidingGlass", label: "Glass - Stainless Panels", thumb: "metal", gate: "sliding", glass: true, color: 0xb9c1c3, metalness: 0.74, roughness: 0.22 },
     ],
   },
@@ -1716,6 +1716,17 @@ function applyGateFinish() {
   // envMapIntensity override (GATE_FINISH_ENV_OVERRIDE): applyMaterialToTargets() clones the material
   // and re-runs tuneMaterialForRender() on the clone, which resets envMapIntensity to the global default
   // — so this has to run AFTER, directly on the live scene node, not inside the material factory.
+  if (finish.id === "bifoldStainless" || finish.id === "slidingStainless") {
+    (targetMap[state.gate] || []).forEach((name) => {
+      findObject(name)?.traverse((child) => {
+        if (child.isMesh && child.material && scene.environment) {
+          child.material.envMap = scene.environment;
+          child.material.envMapIntensity = scene.environmentIntensity * STAINLESS_ENV_BOOST;
+          child.material.needsUpdate = true;
+        }
+      });
+    });
+  }
   const envOverride = GATE_FINISH_ENV_OVERRIDE[finish.id];
   if (envOverride !== undefined) {
     (targetMap[state.gate] || []).forEach((name) => {
@@ -1961,7 +1972,15 @@ const HANDRAIL_FLAT_COLORS = {
 // opaque, black/hole islands -> transparent), but using the photo's own pixel colour for the opaque
 // region would render the metal WHITE, not black. Tint multiplies that white metal area down to the
 // same 0x262626 as alumifoldBlackSolid, while the (already-transparent) hole pixels don't matter.
-const GATE_FINISH_TINT = { alumifoldBlackPerf: 0x262626 };
+// Stainless doors: client, 2026-10-07, "the stainless steel looks more bronze now". The brushed texture is a
+// neutral grey; the warm cast is the HDRI (warm ceiling/floor) reflected by the 0.8-metalness material. A cool
+// tint multiplies the warmth out (measured door R/B 1.25 -> 1.00); STAINLESS_ENV_BOOST buys back the brightness the
+// tint costs. Applied in applyGateFinish() with an explicit material.envMap: three r165 ignores a material's own
+// envMapIntensity while material.envMap is null (it uses scene.environmentIntensity), so GATE_FINISH_ENV_OVERRIDE
+// can't do this job.
+const STAINLESS_DOOR_TINT = 0xa6bcd8;
+const STAINLESS_ENV_BOOST = 4.2;
+const GATE_FINISH_TINT = { alumifoldBlackPerf: 0x262626, bifoldStainless: STAINLESS_DOOR_TINT, slidingStainless: STAINLESS_DOOR_TINT };
 
 // Sliding-door "Beige Powder Coat": client, 2026-08-13, gave RAL 1013 as the target ("Looks dark... needs
 // to be more beige"). The shared beige-01.jpg fixture photo is a near-flat sage-green, not beige (see
@@ -1974,7 +1993,7 @@ const GATE_FINISH_TINT = { alumifoldBlackPerf: 0x262626 };
 // Handrail's bronze (HANDRAIL_FLAT_COLORS.bronze), so reusing that hex here.
 const GATE_FINISH_FLAT_COLORS = {
   slidingBeige: 0xeae6ca,
-  slidingBronze: 0xcd7f32,
+  // slidingBronze: now the textured Low Lights Bronze shared with COP/Handrail (client, 2026-10-08).
 };
 
 // Accordion "Vinyl White": client, 2026-08-13, reported a bright glow around each panel's edge — the
