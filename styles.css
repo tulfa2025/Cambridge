@@ -1474,3 +1474,12 @@ button {
     grid-template-columns: 1fr;
   }
 }
+
+/* Anti-spam honeypot field in the quote form: off-screen, never shown to people. */
+.quote-hp {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+}

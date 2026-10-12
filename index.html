@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cambridge Elevating Configurator</title>
-    <link rel="stylesheet" href="styles.css?v=20261006-back-link-03" />
+    <link rel="stylesheet" href="styles.css?v=20261011-quote-01" />
   </head>
   <body>
     <div class="app-loader" id="appLoader" role="status" aria-live="polite">
@@ -95,6 +95,10 @@
               <span>Phone <span class="required-mark">*</span></span>
               <input type="tel" name="phone" autocomplete="tel" required />
             </label>
+            <label class="quote-hp" aria-hidden="true">
+              <span>Leave this field empty</span>
+              <input type="text" name="website" tabindex="-1" autocomplete="off" />
+            </label>
             <button class="quote-submit" type="submit">Submit Request</button>
             <p class="quote-form__status" id="quoteStatus" role="status"></p>
             <p class="quote-disclaimer">Disclaimer: Cab images are for illustrative purposes only and may not exactly represent the final supplied product. Flooring is not supplied with the elevator, it is provided by others; flooring shown is an example only. The number of lights is determined by cab size and may differ from what is shown.</p>
@@ -112,6 +116,6 @@
         await import("./materials-v2.js?v=20260602-3d-team-lighting-03");
       }
     </script>
-    <script type="module" src="app.js?v=20261008-doorwall-1"></script>
+    <script type="module" src="app.js?v=20261011-quote-01"></script>
   </body>
 </html>

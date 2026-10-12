@@ -3368,14 +3368,57 @@ function setupQuoteModal() {
         phone: fields.phone.trim(),
       },
       configuration: collectConfiguration(),
+      image: captureConfigurationImage(),
+      website: fields.website || "",
     };
-    // TODO: wire real delivery (email / CRM / webhook). For now expose the payload + confirm.
-    window.__lastQuoteRequest = payload;
-    document.body.dataset.lastQuote = JSON.stringify(payload);
-    statusEl.textContent = "Thank you! Your request has been received.";
-    statusEl.className = "quote-form__status ok";
-    form.reset();
+    window.__lastQuoteRequest = { ...payload, image: payload.image ? "(jpeg data url)" : null };
+
+    const submitButton = form.querySelector(".quote-submit");
+    submitButton.disabled = true;
+    statusEl.textContent = "Sending your request...";
+    statusEl.className = "quote-form__status";
+    fetch("/api/quote", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(payload),
+    })
+      .then((response) => {
+        if (!response.ok) throw new Error(`quote request failed: ${response.status}`);
+        statusEl.textContent = "Thank you! Your request has been received. We'll be in touch shortly.";
+        statusEl.className = "quote-form__status ok";
+        form.reset();
+      })
+      .catch((error) => {
+        console.error(error);
+        statusEl.textContent = "We couldn't send your request. Please try again in a moment or contact us directly.";
+        statusEl.className = "quote-form__status err";
+      })
+      .finally(() => {
+        submitButton.disabled = false;
+      });
   });
+}
+
+// Snapshot of the 3D view for the quote email. The WebGL drawing buffer is only readable in the same task
+// as a render() call (no preserveDrawingBuffer), so render first and copy straight away. Downscaled JPEG to
+// keep the request well under the serverless body limit. Returns null if anything goes wrong: the quote is
+// still sent, just without the picture.
+function captureConfigurationImage(maxWidth = 1400) {
+  try {
+    renderer.render(scene, camera);
+    const scale = Math.min(1, maxWidth / canvas.width);
+    const out = document.createElement("canvas");
+    out.width = Math.max(1, Math.round(canvas.width * scale));
+    out.height = Math.max(1, Math.round(canvas.height * scale));
+    const ctx = out.getContext("2d");
+    ctx.fillStyle = "#111111";
+    ctx.fillRect(0, 0, out.width, out.height);
+    ctx.drawImage(canvas, 0, 0, out.width, out.height);
+    return out.toDataURL("image/jpeg", 0.82);
+  } catch (error) {
+    console.warn("configuration image capture failed", error);
+    return null;
+  }
 }
 
 function setText(id, text) {
